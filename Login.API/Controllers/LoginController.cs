@@ -23,7 +23,7 @@ namespace Login.API.Controllers
 
         // POST: api/auth/register
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserRequest request)
+        public async Task<IActionResult> Register([FromBody] Request.RegisterRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -36,10 +36,14 @@ namespace Login.API.Controllers
             var user = new UserClass
             {
                 Email = request.Email,
-                Username = request.Email.Split('@')[0], // Aqui você gera automaticamente um username baseado no email
+                Username = request.Username,
                 PasswordHash = _userService.HashPassword(request.Password),
                 CreatedAt = DateTime.UtcNow,
-                EmailConfirmed = false
+                EmailConfirmed = false,
+                EmailConfirmationToken = Guid.NewGuid().ToString(),
+                EmailConfirmationTokenExpiry = DateTime.UtcNow.AddHours(24),
+                PasswordResetToken = Guid.NewGuid().ToString(),
+                PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(24)
             };
 
             _context.TblUser.Add(user);
@@ -50,12 +54,13 @@ namespace Login.API.Controllers
 
         // POST: api/auth/login
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserRequest request)
+        public async Task<IActionResult> Login([FromBody] Request.LoginRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = await _context.TblUser.FirstOrDefaultAsync(u => u.Email == request.Email);
+            var user = await _context.TblUser.FirstOrDefaultAsync(u => u.Email == request.Identifier ||u.Username == request.Identifier);
+
             if (user == null)
                 return Unauthorized("Usuário não encontrado.");
 

@@ -26,7 +26,7 @@ namespace Login.API.Models
         [RegularExpression(
             @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$",
             ErrorMessage = "A senha deve conter pelo menos: 1 letra maiúscula, 1 minúscula, 1 número e 1 caractere especial")]
-        [NotMapped] // Não será armazenado no banco - apenas para validação
+        [NotMapped]
         public string Password { get; set; }
 
         [Required]
