@@ -13,7 +13,7 @@ namespace Login.API.Services
     public class UserService
     {
         private readonly LoginContext _context;
-        public UserService(LoginContext context)
+        public UserService(LoginContext context, TokenService tokenService)
         {
             _context = context;
         }

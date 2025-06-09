@@ -13,12 +13,13 @@ namespace Login.API.Controllers
     public class LoginController : ControllerBase
     {
         private readonly UserService _userService;
+        private readonly TokenService _tokenService;
 
-        public LoginController(UserService userService)
+        public LoginController(UserService userService, TokenService tokenService)
         {
             _userService = userService;
+            _tokenService = tokenService;
         }
-
         // POST: api/auth/register
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
@@ -45,7 +46,8 @@ namespace Login.API.Controllers
                 {
                     return Unauthorized("Invalid credentials");
                 }
-                return Ok(result);
+                var token = _tokenService.GenerateToken(request);
+                return Ok(new { Token = token });
             }
             catch (Exception ex)
             {
