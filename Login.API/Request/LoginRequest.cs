@@ -2,7 +2,7 @@
 
 namespace Login.API.Request
 {
-    public class LoginRequest
+    public class LoginRequestDto
     {
         [Required]
         public string Identifier { get; init; }

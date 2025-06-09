@@ -2,7 +2,7 @@
 
 namespace Login.API.Request
 {
-    public record class RegisterRequest
+    public record class RegisterRequestDto
     {
         [Required]
         public string Email { get; init; }
